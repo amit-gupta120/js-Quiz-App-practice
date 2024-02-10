@@ -12,7 +12,7 @@ const questions = [
     {
         question: "Which of the following keywords is used to define a variable in Javascript?",
         answers: [
-            { text: "var", correct: true },
+            { text: "var", correct: false },
             { text: "let", correct: false },
             { text: "Both a and b", correct: false },
             { text: "All of the above", correct: true }
@@ -20,12 +20,12 @@ const questions = [
         ]
     },
     {
-        question: "What is the use of the <noscript> tag in Javascript?",
+        question: 'In JavaScript, what is a block of statement?',
         answers: [
-            { text: "The contents are displayed by non-JS-based broswers.", correct: true },
-            { text: "Clear all cookies and cache.", correct: false },
-            { text: "Both a and b", correct: false },
-            { text: "None of the above", correct: true }
+            { text: "Conditional block", correct: false },
+            { text: "block that combines a number of statements into a single compound statement.", correct: true },
+            { text: "both conditional block and a single statement", correct: false },
+            { text: "block that contains a single statement", correct: false }
 
         ]
     },
@@ -65,20 +65,79 @@ function startQuiz() {
     nextButton.innerHTML = "Next"
     showQuestion()
 }
-
-
-
 function showQuestion() {
+    resetState();
     let currentQuestion = questions[currentQuestionIndex]
     let questionNo = currentQuestionIndex + 1
     questionElement.innerHTML = questionNo + "." + currentQuestion.question
-
     currentQuestion.answers.forEach(answer => {
-        console.log("dasdasdasd", answerButtons)
+        // console.log("answerButtons", answerButtons)
         const button = document.createElement("button")
         button.innerHTML = answer.text
         button.classList.add("btn")
         answerButtons.appendChild(button)
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+        button.addEventListener("click", selectAnswer);
     });
 }
+
+
+function resetState() {
+    nextButton.style.display = "none";
+    while (answerButtons.firstChild) {
+        answerButtons.removeChild(answerButtons.firstChild)
+
+    }
+}
+
+function selectAnswer(e) {
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct == "true";
+    console.log("isCorrect", isCorrect);
+
+    if (isCorrect) {
+        selectedBtn.classList.add("correct")
+        score++
+        console.log("Score", score)
+    }
+    else {
+        selectedBtn.classList.add("incorrect")
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if (button.dataset.correct === "true") {
+            button.classList.add("correct")
+        }
+        button.disabled = true
+    });
+    nextButton.style.display = "block"
+}
+
+function showScore() {
+    resetState();
+    questionElement.innerHTML = `Your Score is ${score} out of ${questions.length}`;
+    nextButton.innerHTML = 'Play again'
+    nextButton.style.display = "block"
+}
+
+function handleNextQuestion() {
+    currentQuestionIndex++;
+    // console.log("currentQuestionIndex",currentQuestionIndex);
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    }
+    else {
+        showScore()
+    }
+}
+
+nextButton.addEventListener("click", () => {
+    console.log("clicked");
+    if (currentQuestionIndex < questions.length) {
+        handleNextQuestion()
+    } else {
+        startQuiz();
+    }
+})
 startQuiz();
