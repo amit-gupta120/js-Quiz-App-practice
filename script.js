@@ -52,5 +52,33 @@ const questions = [
 ]
 
 const questionElement = document.getElementById('question')
-const answerButton = document.getElementById('answer_button')
+const answerButtons = document.getElementById('answer_buttons')
 const nextButton = document.getElementById('next-button')
+
+let currentQuestionIndex = 0
+let score = 0;
+
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next"
+    showQuestion()
+}
+
+
+
+function showQuestion() {
+    let currentQuestion = questions[currentQuestionIndex]
+    let questionNo = currentQuestionIndex + 1
+    questionElement.innerHTML = questionNo + "." + currentQuestion.question
+
+    currentQuestion.answers.forEach(answer => {
+        console.log("dasdasdasd", answerButtons)
+        const button = document.createElement("button")
+        button.innerHTML = answer.text
+        button.classList.add("btn")
+        answerButtons.appendChild(button)
+    });
+}
+startQuiz();
